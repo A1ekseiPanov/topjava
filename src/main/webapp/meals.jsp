@@ -10,6 +10,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
+<p><a href="${pageContext.request.contextPath}/add">Add User</a></p>
 <table border="1">
     <thead>
     <tr>
@@ -22,21 +23,23 @@
     </thead>
     <tbody>
     <c:forEach items="${meals}" var="m">
-
-        <c:choose>
-            <c:when test="${m.excess == 'true'}">
-                <tr style="color:red;">
-            </c:when>
-            <c:when test="${m.excess == 'false'}">
-                <tr style="color:green;">
-            </c:when>
-        </c:choose>
-        <td><fmt:parseDate value="${m.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
-            <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${ parsedDateTime }"/></td>
-        <td><c:out value="${m.description}"/></td>
-        <td><c:out value="${m.calories}"/></td>
-        <td></td>
-        <td></td>
+        <tr ${m.excess ? 'style="color: red"' : 'style="color: green"'}>
+            <td><fmt:parseDate value="${m.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
+                <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${ parsedDateTime }"/></td>
+            <td>"${m.description}"</td>
+            <td>${m.calories}</td>
+            <td>
+                <form method="post" action="${pageContext.request.contextPath}/delete">
+                    <input hidden name="id" value="${m.id}"/>
+                    <input type="submit" name="delete" value="Удалить"/>
+                </form>
+            </td>
+            <td>
+                <form method="get" action="${pageContext.request.contextPath}/update">
+                    <input hidden name="id" value="${m.id}"/>
+                    <input type="submit" value="Редактировать"/>
+                </form>
+            </td>
         </tr>
     </c:forEach>
     </tbody>
