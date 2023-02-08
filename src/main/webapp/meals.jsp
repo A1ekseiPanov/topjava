@@ -10,7 +10,8 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<p><a href="${pageContext.request.contextPath}/add">Add User</a></p>
+<%--<p><a href="${pageContext.request.contextPath}/meals/add">Add meal</a></p>--%>
+<p><a href="meals?action=create">Add meal</a></p>
 <table border="1">
     <thead>
     <tr>
@@ -25,21 +26,11 @@
     <c:forEach items="${meals}" var="m">
         <tr ${m.excess ? 'style="color: red"' : 'style="color: green"'}>
             <td><fmt:parseDate value="${m.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both"/>
-                <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${ parsedDateTime }"/></td>
-            <td>"${m.description}"</td>
+                <fmt:formatDate pattern="dd-MM-yyyy HH:mm" value="${ parsedDateTime }"/></td>
+            <td>${m.description}</td>
             <td>${m.calories}</td>
-            <td>
-                <form method="post" action="${pageContext.request.contextPath}/delete">
-                    <input hidden name="id" value="${m.id}"/>
-                    <input type="submit" name="delete" value="Удалить"/>
-                </form>
-            </td>
-            <td>
-                <form method="get" action="${pageContext.request.contextPath}/update">
-                    <input hidden name="id" value="${m.id}"/>
-                    <input type="submit" value="Редактировать"/>
-                </form>
-            </td>
+            <td><a href="meals?action=update&id=${m.id}">Update</a></td>
+            <td><a href="meals?action=delete&id=${m.id}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>
