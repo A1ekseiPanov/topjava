@@ -33,11 +33,11 @@ public class InMemoryMealRepository implements MealRepository {
         }
         // handle case: update, but not present in storage
         if (checkUserId(meal.getId(), userId)) {
+            log.info("update {}", meal);
             return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         } else {
             return null;
         }
-
     }
 
     @Override

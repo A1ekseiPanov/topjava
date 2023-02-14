@@ -20,8 +20,29 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
+    <form method="post">
+    <table>
+        <thead>
+        <tr>
+            <th>Start time</th>
+            <th>Finish time</th>
+            <th></th>
+            <th>Start date</th>
+            <th>Finish date</th>
+        </tr>
+        </thead>
+        <tr>
+            <td><input type="time"  name="dateTime" required></td>
+            <td><input type="time"  name="dateTime" required></td>
+            <td></td>
+            <td><input type="date"  name="dateTime" required></td>
+            <td><input type="date"  name="dateTime" required></td>
+        </tr>
+    </table>
+    <button type="submit">Filtered</button>
+    </form>
     <h2>Meals</h2>
-    <a href="meals?action=create">Add Meal</a>
+    <a href="meals?&action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
