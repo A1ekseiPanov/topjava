@@ -7,7 +7,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,7 +14,7 @@ import java.util.Collection;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
+import static ru.javawebinar.topjava.web.SecurityUtil.*;
 
 @Controller
 public class MealRestController {
@@ -28,17 +27,12 @@ public class MealRestController {
 
     public Collection<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
+        return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
 
-    public Collection<MealTo> getAllFilteredByTime(LocalTime startTime, LocalTime finishTime) {
+    public Collection<MealTo> getFilteredTos(LocalTime startTime, LocalTime finishTime, LocalDate startDay, LocalDate finishDay) {
         log.info("getAllFilteredByTime");
-        return MealsUtil.getFilteredByTime(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay(), startTime, finishTime);
-    }
-
-    public Collection<MealTo> getAllFilteredByDate(LocalDate startDate, LocalDate finishDate) {
-        log.info("getAllFilteredByTime");
-        return MealsUtil.getFilteredByDate(service.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay(), startDate, finishDate);
+        return MealsUtil.getFilteredTosByTime(service.getAll(authUserId()), authUserCaloriesPerDay(), startTime, finishTime);
     }
 
     public Meal get(int id) {

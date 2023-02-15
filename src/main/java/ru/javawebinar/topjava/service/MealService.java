@@ -10,9 +10,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class MealService {
-
     private final MealRepository repository;
-
 
     public MealService(MealRepository repository) {
         this.repository = repository;
@@ -32,10 +30,9 @@ public class MealService {
 
     public Collection<Meal> getAll(int userId) {
         return repository.getAll(userId);
-
     }
 
-    public void update(Meal meal, int userId) {
+    public void update(Meal meal,int userId) {
         checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 }

@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,7 +22,13 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(meal -> save(meal, 3));
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500), 1);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000), 1);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 20, 0), "Ужин", 500), 1);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0), "Еда на граничное значение", 100), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 10, 0), "Завтрак", 1000), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500), 2);
+        save(new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410), 2);
     }
 
     @Override
@@ -28,6 +36,7 @@ public class InMemoryMealRepository implements MealRepository {
         if (meal.isNew()) {
             log.info("create {}", meal);
             meal.setId(counter.incrementAndGet());
+            meal.setUserId(userId);
             repository.put(meal.getId(), meal);
             return meal;
         }
@@ -35,9 +44,8 @@ public class InMemoryMealRepository implements MealRepository {
         if (checkUserId(meal.getId(), userId)) {
             log.info("update {}", meal);
             return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class InMemoryMealRepository implements MealRepository {
             log.info("delete mealId:{} by userId{}", id, userId);
             return repository.remove(id) != null;
         }
-        log.error("user with id {} is trying to delete meal {}", userId, id);
+        log.info("user with id {} is trying to delete meal {}", userId, id);
         return false;
     }
 
@@ -56,23 +64,22 @@ public class InMemoryMealRepository implements MealRepository {
             log.info("get meal {} by user id {}", id, userId);
             return repository.get(id);
         }
-        log.error("user with id {} is trying to get meal {}", userId, id);
+        log.info("user with id {} is trying to get meal {}", userId, id);
         return null;
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public List<Meal> getAll(int userId) {
         log.info("get all by userId {}", userId);
         return repository.values()
                 .stream()
                 .filter(meal -> meal.getUserId().equals(userId))
-                .sorted(((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime())))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
     private boolean checkUserId(int id, int userId) {
         return repository.get(id).getUserId() == userId;
-
     }
 }
 
