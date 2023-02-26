@@ -10,11 +10,14 @@ import java.time.LocalTime;
 
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.ALL, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.FILTER, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE  m.user.id=?1 AND m.dateTime >= ?2 AND m.dateTime< ?3 ORDER BY m.dateTime DESC")
+        @NamedQuery(name = Meal.ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.FILTER, query = "SELECT m FROM Meal m WHERE  m.user.id=?1 AND m.dateTime >= ?2 AND m.dateTime< ?3 ORDER BY m.dateTime DESC")
 })
 @Entity
+@Table(name = "meal", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "date_time"}, name = "meal_unique_user_datetime_idx")
+})
 public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.delete";
     public static final String ALL = "Meal.getAll";
@@ -36,6 +39,7 @@ public class Meal extends AbstractBaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
     private User user;
 
     public Meal() {

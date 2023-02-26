@@ -1,18 +1,18 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
-import org.junit.rules.TestName;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.javawebinar.topjava.TimeRules;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -32,27 +32,12 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 
 public class MealServiceTest {
-    private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
+    @ClassRule
+    public static ExternalResource resource = TimeRules.resource;
 
     @Rule
-    public final TestName name = new TestName();
-
-    @Rule
-    public final ExternalResource externalResource = new ExternalResource() {
-        long start;
-
-        @Override
-        protected void before() throws Throwable {
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected void after() {
-            long end = System.currentTimeMillis() - start;
-            log.info("execution time {} millis, test method: {}", end, name.getMethodName());
-        }
-    };
-
+    public Stopwatch stopwatch = TimeRules.stopwatch;
 
     @Autowired
     private MealService service;

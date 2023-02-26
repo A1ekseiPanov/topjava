@@ -22,14 +22,14 @@ public class JpaMealRepository implements MealRepository {
     @Transactional
     public Meal save(Meal meal, int userId) {
         User user = em.getReference(User.class, userId);
+        meal.setUser(user);
         if (meal.isNew()) {
-            meal.setUser(user);
             em.persist(meal);
             return meal;
-        } else {
-            meal.setUser(user);
+        } else if (get(meal.getId(), userId) != null) {
             return em.merge(meal);
         }
+        return null;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class JpaMealRepository implements MealRepository {
                 .setParameter("id", id)
                 .setParameter("userId", userId)
                 .getResultList();
-        return meals.size() == 0 ? null : DataAccessUtils.singleResult(meals);
+        return DataAccessUtils.singleResult(meals);
     }
 
     @Override
