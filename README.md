@@ -1,4 +1,4 @@
-[![Codacy Badge](https://app.codacy.com/gh/A1ekseiPanov//topjava/settings)
+[![Codacy Badge](https://app.codacy.com/gh/A1ekseiPanov/topjava/settings)
 
 Java Enterprise Online Project 
 ===============================
