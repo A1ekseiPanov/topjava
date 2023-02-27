@@ -34,10 +34,10 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     @ClassRule
-    public static ExternalResource resource = TimeRules.resource;
+    public static ExternalResource resource = TimeRules.SUMMARY;
 
     @Rule
-    public Stopwatch stopwatch = TimeRules.stopwatch;
+    public Stopwatch stopwatch = TimeRules.STOPWATCH;
 
     @Autowired
     private MealService service;

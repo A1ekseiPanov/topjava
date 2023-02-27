@@ -13,19 +13,21 @@ public class TimeRules {
 
     private static final StringBuilder results = new StringBuilder();
 
-    public static final Stopwatch stopwatch = new Stopwatch() {
+    public static final Stopwatch STOPWATCH = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String result = "method: \"" + description.getMethodName() + "\" execution time " + TimeUnit.NANOSECONDS.toMillis(nanos) + " ms";
+            String result = String.format("%-25s %7s ms", description.getMethodName(),
+                    TimeUnit.NANOSECONDS.toMillis(nanos));
             results.append(result).append('\n');
             log.info(result);
         }
     };
 
-    public static final ExternalResource resource = new ExternalResource() {
+    public static final ExternalResource SUMMARY = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
             results.setLength(0);
+            results.append('\n');
         }
 
         @Override
