@@ -16,16 +16,16 @@ import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
 
-public abstract class UserServiceTest extends AbstractServiceTest{
+public abstract class UserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
+    @Autowired
+    private UserService service;
 
     @Before
     public void setup() {
         cacheManager.getCache("users").clear();
     }
-    @Autowired
-    private UserService service;
 
     @Test
     public void create() {

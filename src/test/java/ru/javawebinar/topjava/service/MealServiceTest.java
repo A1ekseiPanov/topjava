@@ -15,9 +15,15 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
-public abstract class MealServiceTest extends AbstractServiceTest{
+public abstract class MealServiceTest extends AbstractServiceTest {
     @Autowired
     private MealService service;
+
+    @Test
+    public void delete() {
+        service.delete(MEAL1_ID, USER_ID);
+        assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+    }
 
     @Test
     public void deleteNotFound() {
