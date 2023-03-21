@@ -8,13 +8,20 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 
 @Repository
+@Transactional(readOnly = true)
 public class JdbcUserRepository implements UserRepository {
+    private final Validator validator;
 
     private static final BeanPropertyRowMapper<User> ROW_MAPPER = BeanPropertyRowMapper.newInstance(User.class);
 
@@ -25,7 +32,8 @@ public class JdbcUserRepository implements UserRepository {
     private final SimpleJdbcInsert insertUser;
 
     @Autowired
-    public JdbcUserRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public JdbcUserRepository(Validator validator, JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.validator = validator;
         this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
@@ -35,9 +43,13 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    @Transactional
     public User save(User user) {
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
-
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
@@ -51,6 +63,7 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id) {
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
