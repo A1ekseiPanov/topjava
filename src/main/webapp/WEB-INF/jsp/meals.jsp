@@ -6,11 +6,6 @@
 
 <html>
 <jsp:include page="fragments/headTag.jsp"/>
-
-<head>
-    <title>Meals</title>
-    <link rel="stylesheet" href="resources/css/style.css">
-</head>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
