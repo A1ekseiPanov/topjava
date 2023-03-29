@@ -26,6 +26,10 @@ public class DateTimeUtil {
         return localDate != null ? localDate.plusDays(1).atStartOfDay() : MAX_DATE;
     }
 
+    public static LocalDateTime atEndOfDayOrMax(LocalDate localDate) {
+        return localDate != null ? localDate.atStartOfDay() : MAX_DATE;
+    }
+
     public static String toString(LocalDateTime ldt) {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
