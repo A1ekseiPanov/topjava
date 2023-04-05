@@ -31,7 +31,7 @@ $(function () {
             "order": [
                 [
                     0,
-                    "asc"
+                    "desc"
                 ]
             ]
         })
@@ -41,16 +41,11 @@ $(function () {
 function filter() {
     let formId = $("#dataTimeFilter")
     $.ajax({
-        url: mealAjaxUrl + filter,
+        url: ctx.ajaxUrl + "filter",
         type: "GET",
-        data: {
-            startDate: formId.find("#startDate"),
-            endDate: formId.find("#endDate"),
-            startTime: formId.find("#startTime"),
-            endTime: formId.find("#endTime")
-        }
-    }).done(function () {
-        updateTable();
+        data: formId.serialize()
+    }).done(function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
         successNoty("Filtered")
     })
 }
