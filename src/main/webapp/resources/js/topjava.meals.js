@@ -30,8 +30,9 @@ $(function () {
                 {
                     "data": "dateTime",
                     "render": function (date, type, row) {
+                        let s = date.split("T");
                         if (type === "display") {
-                            return date.split("T")[0] + " " + date.split("T")[1].substring(0, 5);
+                            return s[0] + " " + s[1].substring(0, 5);
                         }
                         return date;
                     }
@@ -60,11 +61,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.excess) {
-                    $(row).attr("data-meal-excess", true);
-                } else {
-                    $(row).attr("data-meal-excess", false);
-                }
+                data.excess ? $(row).attr("data-meal-excess", true) : $(row).attr("data-meal-excess", false);
             }
         })
     );
