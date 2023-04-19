@@ -86,4 +86,21 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(USER_WITH_MEALS_MATCHER.contentJson(user));
     }
+
+    @Test
+    void validateCreateError() throws Exception {
+               perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(new User())))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void validateUpdateError() throws Exception {
+        User update = new User(null, null, "user@yandex.ru", "newPassword", 5);
+        perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(update)))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
